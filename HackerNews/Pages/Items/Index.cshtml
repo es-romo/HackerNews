@@ -1,0 +1,77 @@
+﻿@page
+@model HackerNews.Pages.Items.IndexModel
+
+@{
+	ViewData["Title"] = Model.Item.Title;
+}
+
+@functions {
+	void renderComments(HackerNews.Models.Item[] items, int depth = 0)
+	{
+		foreach (HackerNews.Models.Item item in items)
+		{
+			<div class="comment" style="margin-left: @(depth)em" id="@item.Id">
+				<div class="comment_top">@item.Author @(HackerNews.Pages.Utils.Utils.GetTimeAgoText(item.Created_at_i))</div>
+				<div class="comment_bottom">@Html.Raw(item.Text)</div>
+			</div>
+
+			if (item.Children != null)
+			{
+				renderComments(item.Children, depth + 1);
+			}
+		}
+	}
+
+	int countChildren(HackerNews.Models.Item item)
+	{
+		int count = 0;
+		if (item.Children != null)
+		{
+			foreach (HackerNews.Models.Item i in item.Children)
+			{
+				count += countChildren(i);
+			}
+		}
+		return count;
+	}
+}
+
+<section>
+	<div id="@Model.Item.Id" class="item">
+		<div class="item_top">
+			<span class="item_title">@Model.Item.Title</span>
+			@if (Model.Item.Url != null)
+			{
+				<a class="item_url" href="@Model.Item.Url" target="_blank">(@(Model.Item.Url.Host))</a>
+			}
+		</div>
+		<div class="item_bottom">
+			<span>
+				@Model.Item.Points points by <a asp-page="/Users/Index" asp-route-id="@Model.Item.Author">@Model.Item.Author</a>
+				@{
+					<span> | @(HackerNews.Pages.Utils.Utils.GetTimeAgoText(Model.Item.Created_at_i))</span>
+					int commentCount = countChildren(Model.Item);
+				}
+				@if (commentCount > 0)
+				{
+					<span> | @(commentCount + (commentCount > 1 ? " comments" : " comment"))</span>
+				}
+			</span>
+		</div>
+		<div class="item_text" >
+		@if (Model.Item.Text != null)
+		{
+			<div class="item_text">>@Html.Raw(Model.Item.Text)</div>
+		}
+		</div>
+	</div>
+	@if (Model.Item.Children != null)
+	{
+		<hr />
+		<div class="comments">
+			@{
+				renderComments(Model.Item.Children);
+			}
+		</div>
+	}
+</section>

@@ -1,0 +1,44 @@
+﻿@page
+@model HackerNews.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Hacker News";
+}
+
+<section class="search_results">
+    <h2 class="section_title">Relevant</h2>
+
+    <div class="search_items">
+        @foreach (var item in Model.Search.Hits.Select((x, i) => new { Value = x, Index = i }))
+        {
+            <div id="@item.Value.ObjectID" class="item">
+                <div class="item_top">
+                    <a asp-page="/Items/Index" asp-route-id="@item.Value.ObjectID" class="item_title">@item.Value.Title</a>
+                    @if (item.Value.Url != null)
+                    {
+                        <a class="item_url" href="@item.Value.Url" target="_blank">(@(item.Value.Url.Host))</a>
+                    }
+                </div>
+                <div class="item_bottom">
+                    <span>
+                        @item.Value.Points points by <a asp-page="/Users/Index" asp-route-id="@item.Value.Author">@item.Value.Author</a>
+                        @{
+                            <span> | @(HackerNews.Pages.Utils.Utils.GetTimeAgoText(item.Value.Created_at_i))</span>
+                        }
+                        @if (item.Value.Num_comments > 0)
+                        {
+                            <span> | </span>
+                            <a asp-page="/Items/Index" asp-route-id="@item.Value.ObjectID"> @item.Value.Num_comments comments</a>
+                        }
+                    </span>
+                </div>
+            </div>
+        }
+    </div>
+        @if (Model.Search.Page + 1 < Model.Search.NbPages)
+        {
+            <div class="search_more">
+             <a asp-page="/Index" asp-route-p="@(Model.Search.Page + 1)"> More</a>
+            </div>
+        }
+</section>
