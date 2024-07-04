@@ -1,7 +1,7 @@
 ﻿/* General */
 :root {
-    --wrap-max-wide: 1440px;
-    --wrap-wide: 80em;
+    --wrap-max-wide: 1240px;
+    --wrap-wide: 60em;
     --text-font: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 
@@ -31,14 +31,14 @@ body {
 
 @media screen and (max-width: 600px) {
     body {
-        --wrap-wide: 90%;
+        --wrap-wide: 95%;
     }
 }
 
 
 @media screen and (max-width: 992px) {
     body {
-        --wrap-wide: 80%;
+        --wrap-wide: 85%;
     }
 }
 
